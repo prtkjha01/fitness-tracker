@@ -23,6 +23,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: false,
     bundleIdentifier: 'com.prateekjha.fitnesstracker',
+    // Free Apple ID "Personal Team" for local device builds (bun run ios:device).
+    appleTeamId: 'BFAQ86SRJM',
     infoPlist: {
       // Only standard HTTPS; skips the export-compliance question on every upload.
       ITSAppUsesNonExemptEncryption: false,
