@@ -1,0 +1,6 @@
+node_modules
+.expo
+dist
+bun.lock
+src/types/database.types.ts
+supabase/.temp
