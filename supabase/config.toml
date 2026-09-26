@@ -439,6 +439,23 @@ enable_confirmations = true
 # 60 s between code emails to one address (local uses 1 s for testing).
 max_frequency = "60s"
 
+# Code emails go out through Resend. Its test sender (onboarding@resend.dev) only
+# delivers to the Resend account's own address, which suits a single-user app.
+# The key is read from the environment at push time and never committed:
+#   RESEND_API_KEY=re_... bunx supabase config push
+[remotes.production.auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "onboarding@resend.dev"
+sender_name = "Fitness Tracker"
+
+[remotes.production.auth.rate_limit]
+# Emails per hour across the project (the local default of 2 is too tight here).
+email_sent = 30
+
 # Leave these at the hosted defaults; the app doesn't depend on them.
 [remotes.production.auth.mfa.totp]
 enroll_enabled = true
