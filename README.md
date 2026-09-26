@@ -108,6 +108,27 @@ policy). After adding a native module or changing native config, bump `version` 
 `app.config.ts` and build again. `--environment production` matters: EAS's variables
 override `.env.local`, so the update points at the hosted project rather than your Mac.
 
+### iPhone without a paid Apple account
+
+A free Apple ID can sign the app from Xcode, but the install stops opening after
+**7 days** and has to be rebuilt. Two things in this repo make that work:
+
+- `plugins/with-no-push-entitlement.js` removes the Push Notifications entitlement.
+  Free accounts can't sign it, and the app only uses local notifications.
+- `.env.production.local` (git-ignored) holds the hosted Supabase URL and publishable key.
+  Release builds use it, while Expo Go keeps using `.env.local`.
+
+One-time setup: accept the Xcode licence (`sudo xcodebuild -license accept`), install
+CocoaPods, add your Apple ID in Xcode → Settings → Accounts, then connect the iPhone by USB
+and turn on Developer Mode. After that, and again every 7 days:
+
+```bash
+bunx expo run:ios --device --configuration Release
+```
+
+This generates `ios/` (git-ignored; never edit it by hand) and installs a standalone build
+that doesn't need the dev server.
+
 ## Known limitations
 
 - Templates can be created from workouts, started and deleted, but not edited or renamed.

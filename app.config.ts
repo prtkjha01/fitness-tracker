@@ -41,6 +41,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     'expo-secure-store',
     'expo-localization',
+    // Listed BEFORE expo-notifications on purpose: entitlement mods run in reverse order,
+    // so this one runs after expo-notifications has added aps-environment.
+    './plugins/with-no-push-entitlement',
     'expo-notifications',
     [
       'expo-splash-screen',
