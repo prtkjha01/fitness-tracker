@@ -9,6 +9,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   owner: 'prateekjha01',
   scheme: 'fitnesstracker',
   version: '1.0.0',
+  // Mobile only (web is a PRD non-goal); stops the dev server offering a web build.
+  platforms: ['ios', 'android'],
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
@@ -34,9 +36,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: './assets/android-icon-monochrome.png',
     },
     predictiveBackGestureEnabled: false,
-  },
-  web: {
-    favicon: './assets/favicon.png',
   },
   plugins: [
     'expo-router',
