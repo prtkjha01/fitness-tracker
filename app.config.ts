@@ -29,9 +29,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: 'com.prateekjha.fitnesstracker',
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
+      backgroundColor: '#000000',
       foregroundImage: './assets/android-icon-foreground.png',
-      backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
     },
     predictiveBackGestureEnabled: false,
@@ -39,7 +38,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     favicon: './assets/favicon.png',
   },
-  plugins: ['expo-router', 'expo-secure-store', 'expo-localization', 'expo-notifications'],
+  plugins: [
+    'expo-router',
+    'expo-secure-store',
+    'expo-localization',
+    'expo-notifications',
+    [
+      'expo-splash-screen',
+      { image: './assets/splash-icon.png', imageWidth: 200, backgroundColor: '#000000' },
+    ],
+  ],
   experiments: {
     typedRoutes: true,
   },
