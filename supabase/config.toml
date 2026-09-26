@@ -422,3 +422,32 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# ---------------------------------------------------------------------------
+# Hosted project ("Fitness Tracker", ap-south-1). Merged over the settings above
+# when pushing with `supabase config push`; local development is unaffected.
+[remotes.production]
+project_id = "wzjqkcsqaoeichnswqtf"
+
+[remotes.production.auth]
+# The app never opens email links (it uses 6-digit codes), so these are placeholders.
+site_url = "fitnesstracker://"
+additional_redirect_urls = []
+
+[remotes.production.auth.email]
+enable_confirmations = true
+# 60 s between code emails to one address (local uses 1 s for testing).
+max_frequency = "60s"
+
+# Leave these at the hosted defaults; the app doesn't depend on them.
+[remotes.production.auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[remotes.production.db.pooler]
+default_pool_size = 15
+max_client_conn = 200
+
+[remotes.production.storage.analytics]
+enabled = true
+max_namespaces = 10

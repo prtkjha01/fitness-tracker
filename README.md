@@ -78,16 +78,35 @@ __tests__/          Jest tests
 - Queued writes older than 7 days are dropped with the persisted cache (`maxAge` in
   `src/lib/query-client.ts`).
 
-## Moving to a hosted Supabase project
+## Production
 
-1. Create the project, then `bunx supabase link --project-ref <ref>` and `bunx supabase db push`.
-   The exercise library is seeded by a migration, so it arrives too.
-2. Auth → Email: turn on **Confirm email**. The app asks for the emailed code.
-3. Copy `supabase/templates/recovery.html` and `confirmation.html` into the dashboard's email
-   templates. They send a 6-digit code (`{{ .Token }}`), not a link.
-4. Set up custom SMTP (e.g. Resend or SendGrid). The built-in sender is heavily rate-limited.
-5. Put the hosted URL and publishable key in your env (EAS environment variables for builds).
-   Never ship the secret key.
+**Supabase:** the "Fitness Tracker" project (`wzjqkcsqaoeichnswqtf`, ap-south-1), linked from this repo.
+
+- **Schema changes:** add a migration with `bunx supabase migration new <name>` and test it
+  locally (`bun run db:reset && bun run db:test`). Then run `bunx supabase db push` and
+  `bunx supabase test db --linked`. The tests roll back, so they're safe on the live database.
+- **Auth settings:** these come from `supabase/config.toml`, with production overrides under
+  `[remotes.production]`. Run `bunx supabase config diff` to review, then
+  `bunx supabase config push`.
+- **Email:** sign-up and password reset need the code templates in `supabase/templates/`. The
+  free tier only accepts custom templates once custom SMTP is configured (Authentication →
+  Emails → SMTP settings). After that, `config push` uploads them.
+
+**EAS:** the project is `@prateekjha01/fitness-tracker`. `EXPO_PUBLIC_SUPABASE_URL` and
+`EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` are stored as EAS environment variables for the
+`preview` and `production` environments (`bunx eas-cli env:list --environment production`).
+Never ship the secret key.
+
+| Task                                   | Command                                                                                             |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Android APK to install directly        | `bunx eas-cli build --platform android --profile preview`                                           |
+| Store / TestFlight build               | `bunx eas-cli build --platform ios --profile production`, then `bunx eas-cli submit --platform ios` |
+| Ship a JS-only fix to installed builds | `bunx eas-cli update --channel production --environment production --message "…"`                   |
+
+Updates reach builds with the same app `version` (`runtimeVersion` uses the `appVersion`
+policy). After adding a native module or changing native config, bump `version` in
+`app.config.ts` and build again. `--environment production` matters: EAS's variables
+override `.env.local`, so the update points at the hosted project rather than your Mac.
 
 ## Known limitations
 

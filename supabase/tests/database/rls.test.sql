@@ -2,6 +2,10 @@
 -- Run with: bun run db:test
 begin;
 create extension if not exists pgtap with schema extensions;
+-- Run as postgres with pgTAP on the path. Locally that's already the case; on a hosted
+-- project the CLI connects as a login role that can't see the "extensions" schema.
+set local role postgres;
+set local search_path = public, extensions;
 
 select plan(65);
 
@@ -174,13 +178,13 @@ select is_empty($$select * from public.recent_foods()$$, 'recent_foods hides A d
 select is(public.copy_food_entries('2026-09-20', '2026-09-21'), 0, 'copy_food_entries cannot copy A entries');
 
 -- ============ Anonymous role gets nothing ============
-reset role;
+set local role postgres;
 set local role anon;
 select throws_ok($$select 1 from public.workouts$$, '42501', null, 'anon cannot read tables');
 select throws_ok($$select public.recent_foods()$$, '42501', null, 'anon cannot call RPCs');
 
 -- ============ Back as postgres: A's data survived B's attempts ============
-reset role;
+set local role postgres;
 select is((select name from public.workouts where id = 'aaaaaaaa-0000-0000-0000-000000000004'),
           'A Workout', 'A workout is unchanged');
 select is((select count(*) from public.workout_sets where user_id = '11111111-1111-1111-1111-111111111111'),

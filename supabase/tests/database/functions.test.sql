@@ -2,6 +2,10 @@
 -- Run with: bun run db:test
 begin;
 create extension if not exists pgtap with schema extensions;
+-- Run as postgres with pgTAP on the path. Locally that's already the case; on a hosted
+-- project the CLI connects as a login role that can't see the "extensions" schema.
+set local role postgres;
+set local search_path = public, extensions;
 
 select plan(17);
 
