@@ -123,7 +123,7 @@ CocoaPods, add your Apple ID in Xcode → Settings → Accounts, then connect th
 and turn on Developer Mode. After that, and again every 7 days:
 
 ```bash
-bunx expo run:ios --device --configuration Release
+bun run ios:device     # = expo run:ios --device --configuration Release
 ```
 
 This generates `ios/` (git-ignored; never edit it by hand) and installs a standalone build
